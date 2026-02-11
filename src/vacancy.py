@@ -1,6 +1,8 @@
 class Vacancy:
     """Класс для представления вакансии"""
 
+    __slots__ = ('title', 'url', 'salary', 'description', 'employer')  # Экономия памяти
+
     def __init__(self, title: str, url: str, salary: dict, description: str, employer: str = ""):
         """
         Инициализация вакансии
