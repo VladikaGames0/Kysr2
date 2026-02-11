@@ -7,8 +7,8 @@ class HeadHunterAPI(APIHandler):
     """Класс для работы с API HeadHunter"""
 
     def __init__(self):
-        self.base_url = "https://api.hh.ru/vacancies"
-        self.headers = {'User-Agent': 'HH-User-Agent'}
+        self.__base_url = "https://api.hh.ru/vacancies"  # Приватный атрибут
+        self.__headers = {'User-Agent': 'HH-User-Agent'}  # Приватный атрибут
 
     def get_vacancies(self, search_query: str, area: str = "113") -> List[Dict[str, Any]]:
         """
@@ -29,19 +29,23 @@ class HeadHunterAPI(APIHandler):
         }
 
         try:
-            response = requests.get(self.base_url, params=params, headers=self.headers)
-            response.raise_for_status()
+            # Используем приватный метод для подключения
+            response = self.__connect_to_api(params)
             data = response.json()
             return data.get('items', [])
         except requests.RequestException as e:
             print(f"Ошибка при получении вакансий: {e}")
             return []
 
+    def __connect_to_api(self, params: dict):
+        """Приватный метод для подключения к API"""
+        return requests.get(self.__base_url, params=params, headers=self.__headers)
+
     def get_vacancy_details(self, vacancy_id: str) -> Dict[str, Any]:
         """Получить детальную информацию о вакансии"""
-        url = f"{self.base_url}/{vacancy_id}"
+        url = f"{self.__base_url}/{vacancy_id}"
         try:
-            response = requests.get(url, headers=self.headers)
+            response = self.__connect_to_api({})
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
